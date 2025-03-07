@@ -16,7 +16,7 @@ test_transform = transforms.Compose([
     transforms.Pad(4),  # 填充4像素，保持与训练一致
     transforms.CenterCrop(32),  # 确定性中心裁剪
     transforms.RandomHorizontalFlip(),#随机翻转
-    #transforms.ColorJitter(brightness=0.2,contrast=0.2),#改变颜色
+    transforms.ColorJitter(brightness=0.2,contrast=0.2),#改变颜色
     transforms.ToTensor(),
     transforms.Normalize((0.4914,0.4822,0.4465), (0.2023,0.1994,0.2010))  # 添加归一化
 ])
@@ -115,6 +115,8 @@ def evaluate(test_loader,model):
     with torch.no_grad():
         model.eval()
         for x,y in test_loader:
+            x = x.to(device)
+            y = y.to(device)
             outputs = model.forward(x)
             predicted = torch.argmax(outputs,dim=1)
             right += (predicted == y).sum().item()
@@ -123,20 +125,28 @@ def evaluate(test_loader,model):
 
 # 其他代码保持不变...
 if __name__ == '__main__':
+    print("GPU:",torch.cuda.is_available())
+    device = torch.device("cuda"if torch.cuda.is_available() else "cpu")
     # 初始化模型
-    model = ResNet()
+    model = ResNet().to(device)
     
     # 优化器配置
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
     criterion = nn.CrossEntropyLoss()
     scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=[15, 25], gamma=0.1)
+    print(next(model.parameters()).device)  # 应该显示 `cuda:0`
 
     # 训练循环
     for epoch in range(30):
         model.train()
         for x, y in train_loader:
+            x = x.to(device)
+            y = y.to(device)
+            #print(x.device)
+            #print(y.device)
             optimizer.zero_grad()
             outputs = model(x)
+           # print(outputs.device)
             loss = criterion(outputs, y)
             loss.backward()
             optimizer.step()
