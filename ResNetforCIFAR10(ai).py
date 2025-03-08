@@ -39,13 +39,15 @@ batch_size = 64
 train_loader = DataLoader(
     train_dataset,          #数据
     batch_size= batch_size,#批次样本数量
-    shuffle = True#是否打乱
+    shuffle = True,#是否打乱
+    pin_memory=True
     )
 
 test_loader = DataLoader(
     test_dataset,
     batch_size = batch_size,
-    shuffle = False
+    shuffle = False,
+    pin_memory=True
     )
 
 # 定义残差块
@@ -115,8 +117,8 @@ def evaluate(test_loader,model):
     with torch.no_grad():
         model.eval()
         for x,y in test_loader:
-            x = x.to(device)
-            y = y.to(device)
+            x = x.to(device,non_blocking = True)
+            y = y.to(device,non_blocking = True)
             outputs = model.forward(x)
             predicted = torch.argmax(outputs,dim=1)
             right += (predicted == y).sum().item()
@@ -127,6 +129,8 @@ def evaluate(test_loader,model):
 if __name__ == '__main__':
     print("GPU:",torch.cuda.is_available())
     device = torch.device("cuda"if torch.cuda.is_available() else "cpu")
+    print(torch.cuda.current_device())  
+    print(torch.cuda.get_device_name(0)) 
     # 初始化模型
     model = ResNet().to(device)
     
