@@ -49,9 +49,9 @@ class Model(nn.Module):
     
     def __init__(self):
         super().__init__()
-        self.conv1 = nn.Conv2d(3,32,3,stride=1,padding=1)
-        self.conv2 = nn.Conv2d(32,64,3,stride=1,padding=1)
-        self.pool = nn.MaxPool2d(2,2)
+        self.conv1 = nn.Conv2d(3,32,3,stride=1,padding=1)#3*32*32          (32-3+2)/1
+        self.conv2 = nn.Conv2d(32,64,3,stride=1,padding=1)#32*32*32
+        self.pool = nn.MaxPool2d(2,2)#32*16*16
         self.bn1 = nn.Identity()
         self.bn2 = nn.Identity()
         self.fc1 = nn.Linear(64*8*8,256)
