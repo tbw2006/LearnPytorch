@@ -7,7 +7,7 @@ class RNN(nn.Module):
         super().__init__()
         self.hidden_size = hidden_size
 
-        self.w_ih = nn.Parameter(torch.randn(input_size,hidden_size))   #ih：inpuut->hidden
+        self.w_ih = nn.Parameter(torch.randn(input_size,hidden_size))   #ih：input->hidden
         self.w_hh = nn.Parameter(torch.randn(hidden_size,hidden_size))  #hh: hidden->hidden
         self.b_ih = nn.Parameter(torch.zeros(hidden_size))      #w:权重矩阵，b:偏置
         self.b_hh = nn.Parameter(torch.zeros(hidden_size))
