@@ -18,7 +18,7 @@ class textRNN(nn.Module):
         self.embedding = nn.Embedding(
             num_embeddings=vocab_size,
             embedding_dim=embedding_dim)
-
+            
         self.rnn = nn.LSTM(
             input_size=embedding_dim,
             hidden_size=self.hidden_size,
@@ -91,8 +91,8 @@ def train_model(model,words, seq_len, word_to_idx,device,lr = 0.001,epochs = 10)
     criterion = nn.CrossEntropyLoss()
     train_tensor,target_tensor = generate_train_text(
         words,
-        word_to_idx=word_to_idx,
-        seq_len=seq_len,
+        word_to_idx=word_to_idx, 
+        seq_len=seq_len, 
         num_samples=num_samples)
     train_tensor = train_tensor.to(device)
     target_tensor = target_tensor.to(device)
@@ -217,7 +217,7 @@ if  __name__ == "__main__":
     seq_len = 50
     num_samples = 2000
     lr = 0.001
-    epochs = 5
+    epochs = 100
     pred_len = 300
     vocab_size = 10000  # 词汇表大小
     word_to_idx,idx_to_word = build_vocab(text,max_vocab_size=vocab_size)
